@@ -1,0 +1,28 @@
+@font-face {
+    font-family: "GrapeSoda";
+    src: url("font/GrapeSoda.ttf");
+}
+
+
+.root {
+    -fx-background-color:    #4b974f  ;
+    -fx-font-family: "GrapeSoda";
+}
+
+.title{
+    -fx-text-fill:   #14081a  ;
+    -fx-font-size: 45;
+}
+
+.buttonOffMouse{
+    -fx-text-fill: #14081a;
+    -fx-font-size: 40;
+    -fx-background-color:  #e6e29e;
+}
+
+.buttonOnMouse{
+    -fx-text-fill: #14081a;
+    -fx-font-size: 40;
+    -fx-background-color:  #6b2c40 ;
+
+}
