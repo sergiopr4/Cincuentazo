@@ -1,10 +1,8 @@
-package com.example.cincuentazo.controller;
+package com.example.cincuentazo.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.paint.Color;
 
 public class BotsController {
 
