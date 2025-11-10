@@ -1,6 +1,6 @@
 package com.example.cincuentazo.View;
 
-import com.sun.tools.javac.Main;
+import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -8,11 +8,11 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class FinJuegoView extends Stage {
-    public FinJuegoView() throws IOException {
+public class MainMenuView extends Stage {
+    public MainMenuView() throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("/com/example/cincuentazo/FinJuego.fxml")
+                getClass().getResource("/com/example/cincuentazo/Bots.fxml")
         );
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
@@ -22,18 +22,18 @@ public class FinJuegoView extends Stage {
         this.show();
     }
 
-    public static FinJuegoView getInstance() throws IOException {
-        if (FinJuegoViewHolder.INSTANCE == null){
-            return FinJuegoViewHolder.INSTANCE = new FinJuegoView();
+    public static MainMenuView getInstance() throws IOException {
+        if (MainMenuViewHolder.INSTANCE == null){
+            return MainMenuViewHolder.INSTANCE = new MainMenuView();
         }else {
-            return FinJuegoViewHolder.INSTANCE;
+            return MainMenuViewHolder.INSTANCE;
         }
     }
 
     /**
      * Clase interna que mantiene la instancia única de MainMenuView.
      */
-    private static class FinJuegoViewHolder {
-        private static FinJuegoView INSTANCE;
+    private static class MainMenuViewHolder {
+        private static MainMenuView INSTANCE;
     }
 }
