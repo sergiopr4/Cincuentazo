@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cincuentazo.Controller.BotsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="root" stylesheets="@style.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.cincuentazo.Controller.MainMenuController">
 <center>
     <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
         <children>
@@ -28,6 +28,7 @@
                   <Button fx:id="ThreeBotButton" mnemonicParsing="false" onAction="#OnActionButton" onMouseEntered="#OnMouseEntered" onMouseExited="#OnMouseExited" prefHeight="55.0" prefWidth="75.0" styleClass="buttonOffMouse" text="3" />
                </children>
             </HBox>
+            <Button fx:id="ExitButton" mnemonicParsing="false" onAction="#OnActionExitButton" pickOnBounds="false" prefHeight="44.0" prefWidth="98.0" style="-fx-border-width: 4; -fx-font-size: 20; -fx-background-insets: 0; -fx-background-color: #f5464c; -fx-border-color: #b22741; -fx-border-radius: 20; -fx-background-radius: 20;" text="SALIR" textAlignment="CENTER" />
         </children>
     </VBox>
 </center>

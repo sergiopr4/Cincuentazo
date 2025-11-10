@@ -9,8 +9,10 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 
-public class BotsController {
+public class MainMenuController {
 
+    @FXML
+    private Button ExitButton;
 
     @FXML
     private Button OneBotButton;
@@ -23,21 +25,19 @@ public class BotsController {
 
     @FXML
     void OnActionButton(ActionEvent event) throws IOException {
-        int numberBots=1;
 
         if (event.getSource().equals(OneBotButton)){
-            System.out.println("numero de bots "+numberBots);
             JuegoView juego=JuegoView.getInstance();
         }
 
         if (event.getSource() == TwoBotButton) {
-            numberBots=2;
+            int numberBots=2;
             System.out.println("numero de bots "+numberBots);
             JuegoView juego=JuegoView.getInstance(numberBots);
         }
 
         if (event.getSource() == ThreeBotButton) {
-            numberBots = 3;
+            int numberBots = 3;
             System.out.println("numero de bots "+numberBots);
             JuegoView juego=JuegoView.getInstance(numberBots);
         }
@@ -70,6 +70,11 @@ public class BotsController {
         if (event.getSource() == ThreeBotButton) {
             ThreeBotButton.getStyleClass().remove("buttonOnMouse");
         }
+    }
+
+    @FXML
+    void OnActionExitButton(ActionEvent event) throws IOException {
+        MainMenuView.getInstance().close();
     }
 
 

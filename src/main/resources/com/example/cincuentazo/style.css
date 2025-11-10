@@ -5,7 +5,7 @@
 
 
 .root {
-    -fx-background-color:    #4b974f  ;
+    -fx-background-color:      #b4e656   ;
     -fx-font-family: "GrapeSoda";
 }
 
@@ -17,7 +17,7 @@
 .buttonOffMouse{
     -fx-text-fill: #14081a;
     -fx-font-size: 40;
-    -fx-background-color:  #e6e29e;
+    -fx-background-color:   #3ec54b;
 }
 
 .buttonOnMouse{
