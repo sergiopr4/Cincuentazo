@@ -13,6 +13,7 @@ import javafx.scene.layout.Pane; // <-- IMPORT NECESARIO
 import javafx.scene.layout.VBox;
 import java.util.List; // <-- IMPORT NECESARIO
 import java.util.Map;
+import javafx.scene.input.MouseEvent;
 
 
 
@@ -48,7 +49,10 @@ public class JuegoController {
     @FXML
     private ImageView imgMazoRobar;
 
+    @FXML
+    void tomarCartaOnClicked(MouseEvent event) {
 
+    }
     /**
      * Método llamado por JuegoView para pasar la cantidad de bots seleccionada
      * e iniciar la lógica de la partida.
