@@ -27,7 +27,10 @@ public class MainMenuController {
     void OnActionButton(ActionEvent event) throws IOException {
 
         if (event.getSource().equals(OneBotButton)){
-            JuegoView juego=JuegoView.getInstance();
+            // ARREGLO: Se cambió getInstance() por getInstance(1)
+            int numberBots=1;
+            System.out.println("numero de bots "+numberBots);
+            JuegoView juego=JuegoView.getInstance(numberBots);
         }
 
         if (event.getSource() == TwoBotButton) {
@@ -46,6 +49,7 @@ public class MainMenuController {
 
     }
 
+    // ... (resto de métodos sin cambios: OnMouseEntered, OnMouseExited, OnActionExitButton)
     @FXML
     void OnMouseEntered(MouseEvent event) {
         if (event.getSource() == OneBotButton) {
@@ -76,7 +80,4 @@ public class MainMenuController {
     void OnActionExitButton(ActionEvent event) throws IOException {
         MainMenuView.getInstance().close();
     }
-
-
-
 }
