@@ -1,6 +1,7 @@
 package com.example.cincuentazo.Models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +37,23 @@ public class BarajaCartaModel implements IBarajaCarta {
     @Override
     public int CartasRestantes() {
         return barajaCarta.size();
+    }
+
+    /**
+     * Agrega una lista de cartas al final del mazo principal
+     * @param cartas Lista de cartas a agregar al final del mazo
+     */
+    @Override
+    public void agregarCartasAlFinal(List<CartaModel> cartas) {
+        if (cartas != null && !cartas.isEmpty()) {
+            barajaCarta.addAll(cartas);
+            System.out.println(cartas.size() + " cartas agregadas al final del mazo");
+        }
+    }
+    @Override
+    public List<CartaModel> MezclarBaraja(){
+        Collections.shuffle(barajaCarta);
+        return barajaCarta;
     }
 
     /**
