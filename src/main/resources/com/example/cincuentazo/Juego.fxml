@@ -20,6 +20,12 @@
             </children>
         </Group>
 
+        <Group layoutX="240.0" layoutY="232.0">
+            <children>
+                <ImageView fx:id="imgMazoRobar" fitHeight="100.0" fitWidth="70.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true" />
+            </children>
+        </Group>
+
         <VBox alignment="CENTER" layoutX="350.0" layoutY="50.0" spacing="5.0" AnchorPane.leftAnchor="350.0" AnchorPane.topAnchor="50.0">
             <children>
                 <Label text="BOT 1" />

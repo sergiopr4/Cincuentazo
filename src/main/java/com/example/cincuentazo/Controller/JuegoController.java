@@ -15,6 +15,7 @@ import java.util.List; // <-- IMPORT NECESARIO
 import java.util.Map;
 
 
+
 /**
  * Controlador de JavaFX (Puente) para la vista principal del juego (Juego.fxml).
  * Se encarga de conectar las acciones del usuario (clics) con el Modelo (lógica del juego)
@@ -44,6 +45,9 @@ public class JuegoController {
     @FXML
     private ImageView imgCartaActual;
 
+    @FXML
+    private ImageView imgMazoRobar;
+
 
     /**
      * Método llamado por JuegoView para pasar la cantidad de bots seleccionada
@@ -53,7 +57,12 @@ public class JuegoController {
     public void setBots(int numBots) {
         System.out.println("Controlador: Recibiendo " + numBots + " bots.");
 
-        cargarReverso(); // Carga la imagen 'reverso.png'
+        cargarReverso();// Carga la imagen 'reverso.png'
+
+        // Mostrar la imagen del reverso en el mazo de robar
+        if (imgMazoRobar != null) {
+            imgMazoRobar.setImage(reversoImg); // <-- AÑADE ESTO
+        }
 
         if (txtSumaMesa == null || manoHumanoContainer == null) {
             System.out.println("¡ERROR FATAL! Las conexiones FXML son NULAS. Revisa los fx:id en Juego.fxml.");
