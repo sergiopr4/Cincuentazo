@@ -14,7 +14,7 @@ public class JuegoModel {
 
     private BarajaCartaModel baraja;
     private int sumaMesa = 0;
-
+    private CartaModel ultimaCartaJugada = null; // <-- AÑADE ESTA LÍNEA
     private List<CartaModel> manoJugador = new ArrayList<>();
     private List<BotModel> bots = new ArrayList<>();
 
@@ -37,7 +37,7 @@ public class JuegoModel {
         manoJugador.clear();
         bots.clear();
         sumaMesa = 0;
-
+        this.ultimaCartaJugada = null;
         for (int i = 0; i < numBots; i++) {
             bots.add(new BotModel(BotModel.Nivel.FACIL));
         }
@@ -78,6 +78,7 @@ public class JuegoModel {
             CartaModel cartaElegida = bot.elegirCartaValida(sumaMesa);
 
             sumaMesa += cartaElegida.getValorNominal();
+            this.ultimaCartaJugada = cartaElegida;
 
             System.out.println("Bot " + (i+1) + " juega: " + cartaElegida.getId() + " | Nueva suma: " + sumaMesa);
 
@@ -106,6 +107,7 @@ public class JuegoModel {
         }
 
         sumaMesa += carta.getValorNominal();
+        this.ultimaCartaJugada = carta;
         System.out.println("Jugador juega: " + carta.getId() + " | Nueva suma: " + sumaMesa);
 
         manoJugador.remove(carta);
@@ -139,5 +141,12 @@ public class JuegoModel {
      */
     public List<CartaModel> getManoJugador() {
         return manoJugador;
+    }
+    /**
+     * Retorna la última carta que se jugó en la mesa.
+     * @return La CartaModel jugada, o null si es el inicio del juego.
+     */
+    public CartaModel getUltimaCartaJugada() {
+        return ultimaCartaJugada;
     }
 }
