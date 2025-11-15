@@ -104,7 +104,11 @@ public class JuegoModel {
         System.out.println("--- Fin Turno Bots ---");
     }
 
-    //test cambiando logica de jugarturnosbots
+    /**
+     * Metodo que se encarga del turno para un bot específico.
+     * Se encarga automaticamente de eliminar a un Bot si ya no puede jugar.
+     * @param bot Bot que hace su turno
+     */
     public void ejecutarTurnoBot(BotModel bot) {
 
         if (!bot.puedeJugar(sumaMesa)) {
@@ -185,6 +189,9 @@ public class JuegoModel {
         return true;
     }
 
+    /**
+     * Metodo que se encarga de añadir una carta de la baraja a la mano del jugador
+     */
     public void robarCartaJugador(){
         if(!estado){
             if (baraja.CartasRestantes() > 0) {
@@ -198,6 +205,58 @@ public class JuegoModel {
             estado=true;
         }
     };
+
+    public enum EstadoPartida {
+        PLAYER_WINS,
+        PLAYER_LOSES,
+        NONE
+    }
+
+
+    /**
+     * Metodo que se encarga de verificar si termina la partida.
+     * <p>
+     *     Verifica las condiciones de ganar o perder y retorna un atributo especifico si el jugador gano o perdio.
+     * </p>
+     * @return
+     */
+    public EstadoPartida verificarFinPartida() {
+
+        // 1. Verificar si TODOS los bots se quedaron sin cartas -> jugador gana
+        boolean botsSinCartas = true;
+        for (BotModel bot : bots) {
+            if (!bot.getMano().isEmpty()) {
+                botsSinCartas = false;
+                break;
+            }
+        }
+
+        if (botsSinCartas && !manoJugador.isEmpty()) {
+            return EstadoPartida.PLAYER_WINS;
+        }
+
+        // 2. El jugador NO puede tomar cartas del mazo y ya no tiene cartas -> pierde
+        if (manoJugador.isEmpty() && baraja.CartasRestantes() == 0) {
+            return EstadoPartida.PLAYER_LOSES;
+        }
+
+        // 3. El jugador tiene cartas pero NO tiene jugadas posibles -> pierde
+        boolean tieneJugada = false;
+        for (CartaModel carta : manoJugador) {
+            if (carta.getValorNominal() + sumaMesa <= 50) {
+                tieneJugada = true;
+                break;
+            }
+        }
+        if (!tieneJugada) {
+            return EstadoPartida.PLAYER_LOSES;
+        }
+
+
+        // 4. Si no ocurre nada → la partida continúa
+        return EstadoPartida.NONE;
+    }
+
 
 
     /**

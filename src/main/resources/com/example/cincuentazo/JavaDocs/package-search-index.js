@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.example.cincuentazo","l":"com.example.cincuentazo"},{"m":"com.example.cincuentazo","l":"com.example.cincuentazo.Controller"},{"m":"com.example.cincuentazo","l":"com.example.cincuentazo.Models"},{"m":"com.example.cincuentazo","l":"com.example.cincuentazo.View"}];updateSearchResults();

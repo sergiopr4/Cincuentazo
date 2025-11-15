@@ -3,6 +3,8 @@ package com.example.cincuentazo.Models;
 import com.example.cincuentazo.Models.JuegoModel;
 import com.example.cincuentazo.Models.BotTurnCompletionListener;
 import com.example.cincuentazo.Models.BotModel;
+import javafx.application.Platform;
+
 /**
  * Clase que extiende Thread para ejecutar la lógica de los turnos de los bots
  * en un hilo de fondo, notificando al Controlador cuando el proceso termina.
@@ -13,7 +15,7 @@ public class BotTurnExecutor extends Thread {
     private final JuegoModel juegoActual;
     private final BotTurnCompletionListener listener;
     // Timer: 1.5 segundos entre las jugadas de cada bot
-    private final long delayMs = 1500;
+    private  long delayMs = 1500;
 
     public BotTurnExecutor(JuegoModel juegoActual, BotTurnCompletionListener listener) {
         this.juegoActual = juegoActual;
@@ -30,14 +32,18 @@ public class BotTurnExecutor extends Thread {
 
                 // 2. Ejecutar la lógica de UN SOLO bot
                 juegoActual.ejecutarTurnoBot(bot); // LLAMADA AL NUEVO MÉTODO
+                System.out.println("BOT HACE SU JUGADA");
 
                 // 3. Pausa (TIMER)
-                Thread.sleep(delayMs);
+                Thread.sleep(delayMs-=1200);
 
                 // 4. Notificación INTERMEDIA para actualizar la UI
                 if (listener != null) {
-                    listener.onBotTurnCompletedStep();
+                    Platform.runLater(() -> listener.onBotTurnCompletedStep());
                 }
+
+                // 3. Pausa (TIMER)
+                Thread.sleep(delayMs+=1200);
             }
 
         } catch (InterruptedException e) {
@@ -48,7 +54,7 @@ public class BotTurnExecutor extends Thread {
         } finally {
             // 5. Notificación FINAL
             if (listener != null) {
-                listener.onBotsTurnFinished();
+                Platform.runLater(() -> listener.onBotsTurnFinished());
             }
             System.out.println("Hilo de Bots: Fin de la ejecución.");
         }

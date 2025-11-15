@@ -3,7 +3,10 @@ package com.example.cincuentazo.Controller;
 import com.example.cincuentazo.Models.BotModel;
 import com.example.cincuentazo.Models.CartaModel;
 import com.example.cincuentazo.Models.JuegoModel;
+import com.example.cincuentazo.View.FinJuegoView;
+import com.example.cincuentazo.View.JuegoView;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -35,6 +38,7 @@ import javafx.application.Platform;
  */
 public class JuegoController implements BotTurnCompletionListener{
 
+    private int numBots;
     private JuegoModel logicaJuego = new JuegoModel();
     private Image reversoImg;
 
@@ -78,10 +82,11 @@ public class JuegoController implements BotTurnCompletionListener{
     /**
      * Método llamado por JuegoView para pasar la cantidad de bots seleccionada
      * e iniciar la lógica de la partida.
-     * @param numBots El número de bots (1, 2 o 3).
+     * @param numBot El número de bots (1, 2 o 3).
      */
-    public void setBots(int numBots) {
-        System.out.println("Controlador: Recibiendo " + numBots + " bots.");
+    public void setBots(int numBot) {
+        System.out.println("Controlador: Recibiendo " + numBot + " bots.");
+        this.numBots = numBot;
 
         cargarReverso();// Carga la imagen 'reverso.png'
 
@@ -95,7 +100,7 @@ public class JuegoController implements BotTurnCompletionListener{
             return;
         }
 
-        logicaJuego.iniciarPartida(numBots);
+        logicaJuego.iniciarPartida(numBot);
 
         actualizarVista();
     }
@@ -315,6 +320,14 @@ public class JuegoController implements BotTurnCompletionListener{
         }
     }
 
+    /**
+     * Metodo que se encarga de la alerta que se genera cuando el usuario presiona una carta AS.
+     * <p>
+     * Maneja el valor de la carta que le puede asignar el usuario o si decide cancelar y escoger
+     * otra carta.
+     * </p>
+     * @return Entero de 1 o 10 dependiendo cual de los dos botones presiono, o un null si decide cancelar
+     */
     public static Integer mostrarOpcionesAs() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Seleccionar valor del As");
@@ -337,26 +350,102 @@ public class JuegoController implements BotTurnCompletionListener{
         return null; // Usuario canceló
     }
 
+    /**
+     * Metodo que deshabilita las cartas del usuario
+     * @param deshabilitar Parametro que si es true desactiva las casrtas del usuario y si es false las vuelve a activar
+     */
+    private void deshabilitarCartasJugador(boolean deshabilitar) {
+        manoHumanoContainer.setDisable(deshabilitar);
+    }
 
+
+    /**
+     * Metodo que se maneja lo que sucede cuando se terminen los hilos de los bots
+     * <p>
+     *     Actualiza la vista vuelve a activar las cartas del jugador y verifica el estado actual del juego
+     *     si el jugador pierde o gana.
+     * </p>
+     */
     @Override
     public void onBotsTurnFinished() {
         Platform.runLater(() -> {
             System.out.println("CALLBACK: Bots terminaron. Actualizando UI.");
             actualizarVista();
+
+            deshabilitarCartasJugador(false);
+
+            JuegoModel.EstadoPartida estado = logicaJuego.verificarFinPartida();
+            if  (estado == JuegoModel.EstadoPartida.PLAYER_LOSES) {
+                try {
+                    JuegoView.getInstance().close();
+                    FinJuegoView finJuegoView = FinJuegoView.getInstance();
+                    FinJuegoController controller = finJuegoView.getFinJuegoController();
+                    controller.setLblGanador("PERDISTE");
+                    finJuegoView.show();
+
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (estado== JuegoModel.EstadoPartida.PLAYER_WINS) {
+                try {
+                    JuegoView.getInstance().close();
+                    FinJuegoView finJuegoView = FinJuegoView.getInstance();
+                    finJuegoView.show();
+
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         });
     }
 
+    /**
+     * Reinicia el juego completamente: modelo, UI y manos de jugadores/bots.
+     */
+    public void reiniciarJuego() {
+        manoHumanoContainer.getChildren().clear();
+        bot1ManoContainer.getChildren().clear();
+        bot2ManoContainer.getChildren().clear();
+        bot3ManoContainer.getChildren().clear();
+        imgCartaActual.setImage(null);
+
+        logicaJuego = new JuegoModel();      // Creamos un nuevo modelo limpio
+        cargarReverso();                     // Asegurarnos de que la imagen del reverso exista
+        actualizarVista();                   // Sin cartas aún
+
+
+        logicaJuego.iniciarPartida(numBots);
+
+        deshabilitarCartasJugador(false);
+
+        actualizarVista();
+
+        System.out.println("Juego reiniciado correctamente.");
+    }
+
+    /**
+     * Metodo que se genera cuando un bot termina su turno.
+     */
     @Override
     public void onBotTurnCompletedStep() {
-        Platform.runLater(() -> {
-            System.out.println("CALLBACK STEP: Un bot terminó. Actualizando vista temporalmente.");
-            actualizarVista();
-        });
+        System.out.println("CALLBACK STEP: Un bot terminó. Actualizando vista temporalmente.");
+        actualizarVista();
     }
 
+    /**
+     * Metodo que se encarga de iniciar los Hilos
+     * <p>
+     *     Deshabilita las cartas del jugador para que no pueda jugar hasta que terminen los bots
+     * </p>
+     */
     private void iniciarTurnoDeBotsAsincrono() {
+        deshabilitarCartasJugador(true);
         // Le pasamos el modelo y el listener (el Controlador, 'this')
         BotTurnExecutor executor = new BotTurnExecutor(logicaJuego, this);
         executor.start();
     }
+
 }
