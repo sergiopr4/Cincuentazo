@@ -9,6 +9,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class MainMenuView extends Stage {
+
+    /**
+     * Contructor de la clase MainMenuView se encarga de mostrar la venta
+     * @throws IOException
+     */
     public MainMenuView() throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(
@@ -22,6 +27,11 @@ public class MainMenuView extends Stage {
         this.show();
     }
 
+    /**
+     * Metodo que retorna la instancia unica
+     * @return Intancia unica de MainMenuView
+     * @throws IOException
+     */
     public static MainMenuView getInstance() throws IOException {
         if (MainMenuViewHolder.INSTANCE == null){
             return MainMenuViewHolder.INSTANCE = new MainMenuView();

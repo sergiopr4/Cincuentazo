@@ -106,6 +106,10 @@ public class BarajaCartaModel implements IBarajaCarta {
         return barajaCarta;
     }
 
+    /**
+     * Metodo que asigna una semilla específica para los elementos generados aleatoriamente
+     * @param seed Semilla que generara los numeros aleatorios
+     */
     public void setSeed(long seed) {
         rand=new Random(seed);
     }
