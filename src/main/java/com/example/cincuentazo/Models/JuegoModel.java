@@ -104,6 +104,47 @@ public class JuegoModel {
         System.out.println("--- Fin Turno Bots ---");
     }
 
+    //test cambiando logica de jugarturnosbots
+    public void ejecutarTurnoBot(BotModel bot) {
+
+        if (!bot.puedeJugar(sumaMesa)) {
+            baraja.agregarCartasAlFinal(bot.getMano());
+            CartasUsadas.addAll(bot.getMano());
+
+            int i = bots.indexOf(bot); // Logging helper
+            System.out.println("Bot " + (i+1) + " no puede jugar. Cartas agregadas al mazo: " + bot.getMano().size());
+            bot.getMano().clear();
+            return; // Turno terminado (sin carta jugada)
+        }
+
+        CartaModel cartaElegida = bot.elegirCartaValida(sumaMesa);
+
+        sumaMesa += cartaElegida.getValorNominal();
+        this.ultimaCartaJugada = cartaElegida;
+
+        int i = bots.indexOf(bot); // Logging helper
+        System.out.println("Bot " + (i+1) + " juega: " + cartaElegida.getId() + " | Nueva suma: " + sumaMesa);
+
+        bot.quitarCarta(cartaElegida);
+        CartasUsadas.add(cartaElegida);
+
+        // Lógica de robar nueva carta
+        if (baraja.CartasRestantes() > 0) {
+            bot.recibirCarta(baraja.DarCarta());
+        } else {
+            System.out.println("¡No quedan cartas en el mazo!, mezclando");
+            baraja.agregarCartasAlFinal(CartasUsadas);
+            baraja.MezclarBaraja();
+            bot.recibirCarta(baraja.DarCarta());
+        }
+    }
+
+
+    //
+
+
+
+
     /**
      * Procesa la jugada del jugador humano.
      * Valida si la carta jugada es legal (no supera 50).

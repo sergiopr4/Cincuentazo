@@ -22,7 +22,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javafx.scene.input.MouseEvent;
-
+import com.example.cincuentazo.Models.BotTurnCompletionListener;
+import com.example.cincuentazo.Models.BotTurnExecutor;
+import javafx.application.Platform;
 
 
 /**
@@ -31,7 +33,7 @@ import javafx.scene.input.MouseEvent;
  * y de actualizar la Vista (UI) con los cambios del Modelo.
  * @version 2.0
  */
-public class JuegoController {
+public class JuegoController implements BotTurnCompletionListener{
 
     private JuegoModel logicaJuego = new JuegoModel();
     private Image reversoImg;
@@ -57,6 +59,8 @@ public class JuegoController {
     @FXML
     private ImageView imgMazoRobar;
 
+    // Archivo: JuegoController.java (MODIFICADO)
+
     @FXML
     void tomarCartaOnClicked(MouseEvent event) {
 
@@ -64,10 +68,9 @@ public class JuegoController {
         if (logicaJuego.getManoJugador().size() <= 3) {
             logicaJuego.robarCartaJugador();
             desiluminarMazo();
-            actualizarVista();
+            actualizarVista(); // Muestra la carta robada
+            iniciarTurnoDeBotsAsincrono();
 
-            logicaJuego.jugarTurnosBots();
-            actualizarVista();
         } else {
             System.out.println("Debes jugar una carta primero antes de robar");
         }
@@ -335,4 +338,26 @@ public class JuegoController {
     }
 
 
+    @Override
+    public void onBotsTurnFinished() {
+        Platform.runLater(() -> {
+            System.out.println("CALLBACK: Bots terminaron. Actualizando UI.");
+            actualizarVista();
+            // Lógica adicional, como habilitar botones del jugador.
+        });
+    }
+
+    @Override
+    public void onBotTurnCompletedStep() {
+        Platform.runLater(() -> {
+            System.out.println("CALLBACK STEP: Un bot terminó. Actualizando vista temporalmente.");
+            actualizarVista();
+        });
+    }
+
+    private void iniciarTurnoDeBotsAsincrono() {
+        // Le pasamos el modelo y el listener (el Controlador, 'this')
+        BotTurnExecutor executor = new BotTurnExecutor(logicaJuego, this);
+        executor.start();
+    }
 }
