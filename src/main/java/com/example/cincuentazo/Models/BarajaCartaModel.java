@@ -105,4 +105,8 @@ public class BarajaCartaModel implements IBarajaCarta {
     public List<CartaModel> getBarajaCarta() {
         return barajaCarta;
     }
+
+    public void setSeed(long seed) {
+        rand=new Random(seed);
+    }
 }
