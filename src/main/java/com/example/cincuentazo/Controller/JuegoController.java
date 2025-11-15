@@ -343,7 +343,6 @@ public class JuegoController implements BotTurnCompletionListener{
         Platform.runLater(() -> {
             System.out.println("CALLBACK: Bots terminaron. Actualizando UI.");
             actualizarVista();
-            // Lógica adicional, como habilitar botones del jugador.
         });
     }
 
