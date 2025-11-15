@@ -392,6 +392,8 @@ public class JuegoController implements BotTurnCompletionListener{
                 try {
                     JuegoView.getInstance().close();
                     FinJuegoView finJuegoView = FinJuegoView.getInstance();
+                    FinJuegoController controller = finJuegoView.getFinJuegoController();
+                    controller.setLblGanador("GANASTE");
                     finJuegoView.show();
 
 
