@@ -128,6 +128,10 @@ public class JuegoModel {
 
         manoJugador.remove(carta);
         CartasUsadas.add(carta);
+        return true;
+    }
+
+    public void robarCartaJugador(){
         if (baraja.CartasRestantes() > 0) {
             manoJugador.add(baraja.DarCarta());
         }else{
@@ -136,12 +140,6 @@ public class JuegoModel {
             baraja.MezclarBaraja();
             manoJugador.add(baraja.DarCarta());
         }
-
-        return true;
-    }
-
-    void tomaCartaJugador(){
-        manoJugador.add(baraja.DarCarta());
     };
 
 
