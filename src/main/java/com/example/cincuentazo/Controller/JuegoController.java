@@ -4,6 +4,9 @@ import com.example.cincuentazo.Models.BotModel;
 import com.example.cincuentazo.Models.CartaModel;
 import com.example.cincuentazo.Models.JuegoModel;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -11,8 +14,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import javafx.scene.input.MouseEvent;
 
 
@@ -112,7 +120,11 @@ public class JuegoController {
                 imgView.setPreserveRatio(true);
                 imgView.setSmooth(true);
                 imgView.setOnMouseClicked(event -> {
-                    alHacerClicEnCarta(carta);
+                    try {
+                        alHacerClicEnCarta(carta);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
                 manoHumanoContainer.getChildren().add(imgView);
             } catch (Exception e) {
@@ -165,8 +177,18 @@ public class JuegoController {
      * Método de evento que se dispara cuando el jugador hace clic en una carta.
      * @param carta La CartaModel asociada a la imagen en la que se hizo clic.
      */
-    private void alHacerClicEnCarta(CartaModel carta) {
+    private void alHacerClicEnCarta(CartaModel carta) throws IOException {
         System.out.println("Controlador: Jugador hizo clic en: " + carta.getId());
+
+        //SELECCIONAR UN AS ESCOGER ENTRE 1 O 10
+        if (Objects.equals(carta.getId(), "1")) {
+            Integer valor = mostrarOpcionesAs();
+            if (valor == null) {
+                System.out.println("El usuario canceló.");
+                return;
+            }
+            carta.setValorNominal(valor);
+        }
 
         boolean jugadaExitosa = logicaJuego.jugadorJuegaCarta(carta);
         if (jugadaExitosa) {
@@ -289,5 +311,28 @@ public class JuegoController {
             botContainer.getChildren().add(reversoView);
         }
     }
+
+    public static Integer mostrarOpcionesAs() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Seleccionar valor del As");
+        alert.setHeaderText("¿Qué valor desea asignar al As?");
+        alert.setContentText("Seleccione una opción:");
+
+        ButtonType btn1 = new ButtonType("1");
+        ButtonType btn10 = new ButtonType("10");
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonType.CANCEL.getButtonData());
+
+        alert.getButtonTypes().setAll(btn1, btn10, btnCancelar);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get() == btn1) return 1;
+            if (result.get() == btn10) return 10;
+        }
+
+        return null; // Usuario canceló
+    }
+
 
 }
