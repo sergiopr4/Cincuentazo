@@ -117,6 +117,13 @@ public class JuegoModel {
             if (carta.getValorNominal() + sumaMesa > 50) {
                 if (!(manoJugador.stream().anyMatch(c -> c.getValorNominal() + sumaMesa <= 50))){
                     System.out.println("Jugador eliminado");
+                    /*
+                    * DEBE EXISTIR MODO PARA CAMBIAR A PANTALLA FINAL IGUAL CON BOT
+                    * QUE MUESTRE SI GANO LA MAQUINA O HUMANO
+                    * :))
+                    * */
+
+
                     baraja.agregarCartasAlFinal(manoJugador);
                     manoJugador.clear();
                     estado=false;
