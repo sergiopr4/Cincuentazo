@@ -19,6 +19,7 @@ public class JuegoModel {
     private List<CartaModel> manoJugador = new ArrayList<>();
     private List<BotModel> bots = new ArrayList<>();
     private List<CartaModel>CartasUsadas=new ArrayList<>();
+    private boolean estado=true;
     /**
      * Constructor de la clase JuegoModel.
      * Inicializa la baraja de cartas.
@@ -112,33 +113,48 @@ public class JuegoModel {
      */
 
     public boolean jugadorJuegaCarta(CartaModel carta) {
-        if (carta.getValorNominal() + sumaMesa > 50) {
-            if (!(manoJugador.stream().anyMatch(c -> c.getValorNominal() + sumaMesa <= 50))){
-                System.out.println("Jugador eliminado");
-                baraja.agregarCartasAlFinal(manoJugador);
-                manoJugador.clear();
-                return true;
-            }else{System.out.println("Jugada ilegal, supera 50");}
+        if(estado){
+            if (carta.getValorNominal() + sumaMesa > 50) {
+                if (!(manoJugador.stream().anyMatch(c -> c.getValorNominal() + sumaMesa <= 50))){
+                    System.out.println("Jugador eliminado");
+                    /*
+                    * DEBE EXISTIR MODO PARA CAMBIAR A PANTALLA FINAL IGUAL CON BOT
+                    * QUE MUESTRE SI GANO LA MAQUINA O HUMANO
+                    * :))
+                    * */
+
+
+                    baraja.agregarCartasAlFinal(manoJugador);
+                    manoJugador.clear();
+                    estado=false;
+                    return true;
+                }else{System.out.println("Jugada ilegal, supera 50");}
                 return false;
+            }
+
+            sumaMesa += carta.getValorNominal();
+            this.ultimaCartaJugada = carta;
+            System.out.println("Jugador juega: " + carta.getId() + " | Nueva suma: " + sumaMesa);
+
+            manoJugador.remove(carta);
+            CartasUsadas.add(carta);
+            estado=false;
+            return true;
         }
-
-        sumaMesa += carta.getValorNominal();
-        this.ultimaCartaJugada = carta;
-        System.out.println("Jugador juega: " + carta.getId() + " | Nueva suma: " + sumaMesa);
-
-        manoJugador.remove(carta);
-        CartasUsadas.add(carta);
         return true;
     }
 
     public void robarCartaJugador(){
-        if (baraja.CartasRestantes() > 0) {
-            manoJugador.add(baraja.DarCarta());
-        }else{
-            System.out.println("¡No quedan cartas en el mazo!, mezclando");
-            baraja.agregarCartasAlFinal(CartasUsadas);
-            baraja.MezclarBaraja();
-            manoJugador.add(baraja.DarCarta());
+        if(!estado){
+            if (baraja.CartasRestantes() > 0) {
+                manoJugador.add(baraja.DarCarta());
+            }else{
+                System.out.println("¡No quedan cartas en el mazo!, mezclando");
+                baraja.agregarCartasAlFinal(CartasUsadas);
+                baraja.MezclarBaraja();
+                manoJugador.add(baraja.DarCarta());
+            }
+            estado=true;
         }
     };
 
