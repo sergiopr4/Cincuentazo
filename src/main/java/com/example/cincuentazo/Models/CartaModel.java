@@ -37,8 +37,6 @@ public class CartaModel implements ICarta{
     }
 
 
-  //Se elimino Metodo TomarValor(int As) pues era inecesario por metodo setValorNominal()
-
     /**
      * Metodo que retorna la identificacion de la carta
      * @return Identificaion de la carta

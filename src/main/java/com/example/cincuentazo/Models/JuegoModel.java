@@ -2,6 +2,7 @@ package com.example.cincuentazo.Models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Clase que representa la logica de los datos dentro del juego (Modelo).
@@ -14,10 +15,10 @@ public class JuegoModel {
 
     private BarajaCartaModel baraja;
     private int sumaMesa = 0;
-    private CartaModel ultimaCartaJugada = null; // <-- AÑADE ESTA LÍNEA
+    private CartaModel ultimaCartaJugada = null;
     private List<CartaModel> manoJugador = new ArrayList<>();
     private List<BotModel> bots = new ArrayList<>();
-
+    private List<CartaModel>CartasUsadas=new ArrayList<>();
     /**
      * Constructor de la clase JuegoModel.
      * Inicializa la baraja de cartas.
@@ -37,7 +38,9 @@ public class JuegoModel {
         manoJugador.clear();
         bots.clear();
         sumaMesa = 0;
-        this.ultimaCartaJugada = null;
+        this.ultimaCartaJugada = baraja.getBarajaCarta().get(new Random().nextInt(baraja.CartasRestantes()));
+        sumaMesa += ultimaCartaJugada.getValorNominal();
+        CartasUsadas.add(ultimaCartaJugada);
         for (int i = 0; i < numBots; i++) {
             bots.add(new BotModel(BotModel.Nivel.FACIL));
         }
@@ -71,7 +74,11 @@ public class JuegoModel {
             BotModel bot = bots.get(i);
 
             if (!bot.puedeJugar(sumaMesa)) {
-                System.out.println("Bot " + (i+1) + " no puede jugar y queda eliminado.");
+
+                baraja.agregarCartasAlFinal(bot.getMano());
+                CartasUsadas.addAll(bot.getMano());
+                System.out.println("Bot " + (i+1) + " no puede jugar. Cartas agregadas al mazo: " + bot.getMano().size());
+                bot.getMano().clear();
                 continue;
             }
 
@@ -83,11 +90,14 @@ public class JuegoModel {
             System.out.println("Bot " + (i+1) + " juega: " + cartaElegida.getId() + " | Nueva suma: " + sumaMesa);
 
             bot.quitarCarta(cartaElegida);
-
+            CartasUsadas.add(cartaElegida);
             if (baraja.CartasRestantes() > 0) {
                 bot.recibirCarta(baraja.DarCarta());
             } else {
-                System.out.println("¡No quedan cartas en el mazo!");
+                System.out.println("¡No quedan cartas en el mazo!, mezclando");
+                baraja.agregarCartasAlFinal(CartasUsadas);
+                baraja.MezclarBaraja();
+                bot.recibirCarta(baraja.DarCarta());
             }
         }
         System.out.println("--- Fin Turno Bots ---");
@@ -100,10 +110,16 @@ public class JuegoModel {
      * @param carta La carta que el jugador ha seleccionado.
      * @return true si la jugada fue válida, false si fue ilegal.
      */
+
     public boolean jugadorJuegaCarta(CartaModel carta) {
         if (carta.getValorNominal() + sumaMesa > 50) {
-            System.out.println("Jugada ilegal, supera 50");
-            return false;
+            if (!(manoJugador.stream().anyMatch(c -> c.getValorNominal() + sumaMesa <= 50))){
+                System.out.println("Jugador eliminado");
+                baraja.agregarCartasAlFinal(manoJugador);
+                manoJugador.clear();
+                return true;
+            }else{System.out.println("Jugada ilegal, supera 50");}
+                return false;
         }
 
         sumaMesa += carta.getValorNominal();
@@ -111,13 +127,21 @@ public class JuegoModel {
         System.out.println("Jugador juega: " + carta.getId() + " | Nueva suma: " + sumaMesa);
 
         manoJugador.remove(carta);
-
-        if (baraja.CartasRestantes() > 0) {
-            manoJugador.add(baraja.DarCarta());
-        }
-
+        CartasUsadas.add(carta);
         return true;
     }
+
+    public void robarCartaJugador(){
+        if (baraja.CartasRestantes() > 0) {
+            manoJugador.add(baraja.DarCarta());
+        }else{
+            System.out.println("¡No quedan cartas en el mazo!, mezclando");
+            baraja.agregarCartasAlFinal(CartasUsadas);
+            baraja.MezclarBaraja();
+            manoJugador.add(baraja.DarCarta());
+        }
+    };
+
 
     /**
      * Metodo que retorna la suma actual en la mesa.

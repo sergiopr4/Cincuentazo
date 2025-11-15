@@ -1,6 +1,6 @@
 package com.example.cincuentazo.Controller;
 
-import com.example.cincuentazo.Models.BotModel; // <-- IMPORT NECESARIO
+import com.example.cincuentazo.Models.BotModel;
 import com.example.cincuentazo.Models.CartaModel;
 import com.example.cincuentazo.Models.JuegoModel;
 import javafx.fxml.FXML;
@@ -9,10 +9,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane; // <-- IMPORT NECESARIO
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import java.util.List; // <-- IMPORT NECESARIO
+import java.util.List;
 import java.util.Map;
+import javafx.scene.input.MouseEvent;
 
 
 
@@ -34,13 +35,13 @@ public class JuegoController {
     private HBox manoHumanoContainer;
 
     @FXML
-    private HBox bot1ManoContainer; // Coincide con el HBox del FXML
+    private HBox bot1ManoContainer;
 
     @FXML
-    private VBox bot2ManoContainer; // Coincide con el VBox del FXML
+    private VBox bot2ManoContainer;
 
     @FXML
-    private VBox bot3ManoContainer; // Coincide con el VBox del FXML
+    private VBox bot3ManoContainer;
 
     @FXML
     private ImageView imgCartaActual;
@@ -48,7 +49,21 @@ public class JuegoController {
     @FXML
     private ImageView imgMazoRobar;
 
+    @FXML
+    void tomarCartaOnClicked(MouseEvent event) {
 
+        System.out.println("Jugador hace clic en mazo para robar");
+        if (logicaJuego.getManoJugador().size() <= 3) {
+            logicaJuego.robarCartaJugador();
+            desiluminarMazo();
+            actualizarVista();
+
+            logicaJuego.jugarTurnosBots();
+            actualizarVista();
+        } else {
+            System.out.println("Debes jugar una carta primero antes de robar");
+        }
+    }
     /**
      * Método llamado por JuegoView para pasar la cantidad de bots seleccionada
      * e iniciar la lógica de la partida.
@@ -61,7 +76,7 @@ public class JuegoController {
 
         // Mostrar la imagen del reverso en el mazo de robar
         if (imgMazoRobar != null) {
-            imgMazoRobar.setImage(reversoImg); // <-- AÑADE ESTO
+            imgMazoRobar.setImage(reversoImg);//reverso de la carta
         }
 
         if (txtSumaMesa == null || manoHumanoContainer == null) {
@@ -85,7 +100,6 @@ public class JuegoController {
         // --- Actualizar Mano Humano ---
         manoHumanoContainer.getChildren().clear();
         for (CartaModel carta : logicaJuego.getManoJugador()) {
-            // (Tu código de traducción y carga de imagen de la mano... todo esto está perfecto)
             String idTraducido = traducirId(carta.getId());
             String paloTraducido = traducirPalo(carta.getPalo());
             String nombreCarta = idTraducido + "_" + paloTraducido + ".png";
@@ -155,9 +169,10 @@ public class JuegoController {
         System.out.println("Controlador: Jugador hizo clic en: " + carta.getId());
 
         boolean jugadaExitosa = logicaJuego.jugadorJuegaCarta(carta);
-
         if (jugadaExitosa) {
-            logicaJuego.jugarTurnosBots(); // <-- Nombre corregido
+            if (logicaJuego.getManoJugador().size() == 3) {
+                iluminarMazo();
+            }
             actualizarVista();
         } else {
             System.out.println("Controlador: Jugada ilegal. La vista no se actualiza.");
@@ -171,6 +186,13 @@ public class JuegoController {
         // Este método es requerido por JuegoView.
     }
 
+    private void iluminarMazo() {
+        imgMazoRobar.setStyle("-fx-effect: dropshadow(three-pass-box, #00ff00, 10, 0.5, 0, 0);");
+    }
+
+    private void desiluminarMazo() {
+        imgMazoRobar.setStyle("");
+    }
     // --- MÉTODOS TRADUCTORES ---
 
     /**
@@ -250,7 +272,6 @@ public class JuegoController {
             reversoView.setSmooth(true); // Para que la imagen se vea bien
 
             // --- CAMBIO DE TAMAÑO ---
-            // Los números anteriores (40) eran muy pequeños.
 
             if (botContainer instanceof HBox) {
                 // Bot 1 (Cartas verticales)
