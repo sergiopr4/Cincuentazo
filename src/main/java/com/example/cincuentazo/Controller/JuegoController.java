@@ -51,8 +51,18 @@ public class JuegoController {
 
     @FXML
     void tomarCartaOnClicked(MouseEvent event) {
-        System.out.println("intentando tomar carta");
 
+        System.out.println("Jugador hace clic en mazo para robar");
+        if (logicaJuego.getManoJugador().size() <= 3) {
+            logicaJuego.robarCartaJugador();
+            desiluminarMazo();
+            actualizarVista();
+
+            logicaJuego.jugarTurnosBots();
+            actualizarVista();
+        } else {
+            System.out.println("Debes jugar una carta primero antes de robar");
+        }
     }
     /**
      * Método llamado por JuegoView para pasar la cantidad de bots seleccionada
@@ -159,10 +169,10 @@ public class JuegoController {
         System.out.println("Controlador: Jugador hizo clic en: " + carta.getId());
 
         boolean jugadaExitosa = logicaJuego.jugadorJuegaCarta(carta);
-
         if (jugadaExitosa) {
-            logicaJuego.jugarTurnosBots();
-
+            if (logicaJuego.getManoJugador().size() == 3) {
+                iluminarMazo();
+            }
             actualizarVista();
         } else {
             System.out.println("Controlador: Jugada ilegal. La vista no se actualiza.");
@@ -176,6 +186,13 @@ public class JuegoController {
         // Este método es requerido por JuegoView.
     }
 
+    private void iluminarMazo() {
+        imgMazoRobar.setStyle("-fx-effect: dropshadow(three-pass-box, #00ff00, 10, 0.5, 0, 0);");
+    }
+
+    private void desiluminarMazo() {
+        imgMazoRobar.setStyle("");
+    }
     // --- MÉTODOS TRADUCTORES ---
 
     /**
